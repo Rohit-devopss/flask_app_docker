@@ -45,7 +45,7 @@ def index():
 @app.route('/insertintotable',methods = ['POST'])
 def insertintotable():
     nm = request.form['nm']
-    
+    return "Hello"
 
     #**************** FUNCTIONS TO FETCH DATA ***************************
     def get_historical(quote):
