@@ -121,14 +121,9 @@ def insertintotable():
             plt.legend(loc=4)
             plt.savefig('static/ARIMA.png')
             plt.close(fig)
-            print()
-            print("##############################################################################")
             arima_pred=predictions[-2]
-            print("Tomorrow's",quote," Closing Price Prediction by ARIMA:",arima_pred)
             #rmse calculation
             error_arima = math.sqrt(mean_squared_error(test, predictions))
-            print("ARIMA RMSE:",error_arima)
-            print("##############################################################################")
             return arima_pred, error_arima
         
         
@@ -256,11 +251,6 @@ def insertintotable():
         forecasted_stock_price=sc.inverse_transform(forecasted_stock_price)
         
         lstm_pred=forecasted_stock_price[0,0]
-        print()
-        print("##############################################################################")
-        print("Tomorrow's ",quote," Closing Price Prediction by LSTM: ",lstm_pred)
-        print("LSTM RMSE:",error_lstm)
-        print("##############################################################################")
         return lstm_pred,error_lstm
     #***************** LINEAR REGRESSION SECTION ******************       
     def LIN_REG_ALGO(df):
@@ -318,11 +308,6 @@ def insertintotable():
         forecast_set=forecast_set*(1.04)
         mean=forecast_set.mean()
         lr_pred=forecast_set[0,0]
-        print()
-        print("##############################################################################")
-        print("Tomorrow's ",quote," Closing Price Prediction by Linear Regression: ",lr_pred)
-        print("Linear Regression RMSE:",error_lr)
-        print("##############################################################################")
         return df, lr_pred, forecast_set, mean, error_lr
     #**************** SENTIMENT ANALYSIS **************************
     def retrieving_tweets_polarity(symbol):
@@ -386,10 +371,7 @@ def insertintotable():
         if neutral<0:
         	neg=neg+neutral
         	neutral=20
-        print()
-        print("###############qua###############################################################")
-        print("Positive Tweets :",pos,"Negative Tweets :",neg,"Neutral Tweets :",neutral)
-        print("##############################################################################")
+        
         labels=['Positive','Negative','Neutral']
         sizes = [pos,neg,neutral]
         explode = (0, 0, 0)
@@ -403,16 +385,8 @@ def insertintotable():
         plt.close(fig)
         #plt.show()
         if global_polarity>0:
-            print()
-            print("##############################################################################")
-            print("Tweets Polarity: Overall Positive")
-            print("##############################################################################")
             tw_pol="Overall Positive"
         else:
-            print()
-            print("##############################################################################")
-            print("Tweets Polarity: Overall Negative")
-            print("##############################################################################")
             tw_pol="Overall Negative"
         return global_polarity,tw_list,tw_pol,pos,neg,neutral
 
@@ -422,21 +396,12 @@ def insertintotable():
             if global_polarity > 0:
                 idea="RISE"
                 decision="BUY"
-                print()
-                print("##############################################################################")
-                print("According to the ML Predictions and Sentiment Analysis of Tweets, a",idea,"in",quote,"stock is expected => ",decision)
             elif global_polarity <= 0:
                 idea="FALL"
                 decision="SELL"
-                print()
-                print("##############################################################################")
-                print("According to the ML Predictions and Sentiment Analysis of Tweets, a",idea,"in",quote,"stock is expected => ",decision)
         else:
             idea="FALL"
             decision="SELL"
-            print()
-            print("##############################################################################")
-            print("According to the ML Predictions and Sentiment Analysis of Tweets, a",idea,"in",quote,"stock is expected => ",decision)
         return idea, decision
 
 
@@ -454,11 +419,7 @@ def insertintotable():
     
         #************** PREPROCESSUNG ***********************
         df = pd.read_csv(''+quote+'.csv')
-        print("##############################################################################")
-        print("Today's",quote,"Stock Data: ")
         today_stock=df.iloc[-1:]
-        print(today_stock)
-        print("##############################################################################")
         df = df.dropna()
         code_list=[]
         for i in range(0,len(df)):
@@ -476,23 +437,19 @@ def insertintotable():
         
         idea, decision=recommending(df, polarity,today_stock,mean)
         
-        print()
-        print("Forecasted Prices for Next 7 days:")
-        # print(forecast_set)
         today_stock=today_stock.round(2)
 
-        print(tw_list)
-        
         return render_template('results.html',quote=quote,lstm_pred=round(lstm_pred,2),
-                               open_s=today_stock['Open'].to_string(index=False),
+                               lr_pred=round(lr_pred,2),open_s=today_stock['Open'].to_string(index=False),
                                close_s=today_stock['Close'].to_string(index=False),adj_close=today_stock['Adj Close'].to_string(index=False),
                                tw_list=tw_list,tw_pol=tw_pol,idea=idea,decision=decision,high_s=today_stock['High'].to_string(index=False),
                                low_s=today_stock['Low'].to_string(index=False),vol=today_stock['Volume'].to_string(index=False),
-                               error_lstm=round(error_lstm,2))
+                               forecast_set=forecast_set,error_lr=round(error_lr,2),error_lstm=round(error_lstm,2))
 
 if __name__ == '__main__':
     from waitress import serve
-    serve(app, host='0.0.0.0', port=5000)
+    serve(app, host='0.0.0.0', port=5000,threads= 12)
+    # app.run()
 
    
 
