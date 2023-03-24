@@ -45,7 +45,6 @@ def index():
 @app.route('/insertintotable',methods = ['POST'])
 def insertintotable():
     nm = request.form['nm']
-    
 
     #**************** FUNCTIONS TO FETCH DATA ***************************
     def get_historical(quote):
@@ -492,7 +491,8 @@ def insertintotable():
                                error_lstm=round(error_lstm,2))
 
 if __name__ == '__main__':
-    app.run()
+    from waitress import serve
+    serve(app, host='0.0.0.0', port=5000)
 
    
 
