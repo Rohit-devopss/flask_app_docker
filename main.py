@@ -469,7 +469,7 @@ def insertintotable():
         df=df2
 
 
-        arima_pred, error_arima=ARIMA_ALGO(df)
+        # arima_pred, error_arima=ARIMA_ALGO(df)
         lstm_pred, error_lstm=LSTM_ALGO(df)
         df, lr_pred, forecast_set,mean,error_lr=LIN_REG_ALGO(df)
 
@@ -479,21 +479,20 @@ def insertintotable():
         
         print()
         print("Forecasted Prices for Next 7 days:")
-        print(forecast_set)
+        # print(forecast_set)
         today_stock=today_stock.round(2)
 
         print(tw_list)
         
-        return render_template('results.html',quote=quote,arima_pred=round(arima_pred,2),lstm_pred=round(lstm_pred,2),
-                               lr_pred=round(lr_pred,2),open_s=today_stock['Open'].to_string(index=False),
+        return render_template('results.html',quote=quote,lstm_pred=round(lstm_pred,2),
+                               open_s=today_stock['Open'].to_string(index=False),
                                close_s=today_stock['Close'].to_string(index=False),adj_close=today_stock['Adj Close'].to_string(index=False),
                                tw_list=tw_list,tw_pol=tw_pol,idea=idea,decision=decision,high_s=today_stock['High'].to_string(index=False),
                                low_s=today_stock['Low'].to_string(index=False),vol=today_stock['Volume'].to_string(index=False),
-                               forecast_set=forecast_set,error_lr=round(error_lr,2),error_lstm=round(error_lstm,2),error_arima=round(error_arima,2))
+                               error_lstm=round(error_lstm,2))
 
 if __name__ == '__main__':
-    from waitress import serve
-    serve(app, host='0.0.0.0', port=5000)
+    app.run()
 
    
 
