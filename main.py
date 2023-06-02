@@ -200,7 +200,7 @@ def insertintotable():
         regressor.compile(optimizer='adam',loss='mean_squared_error')
         
         #Training
-        regressor.fit(X_train,y_train,epochs=10,batch_size=32 )
+        regressor.fit(X_train,y_train,epochs=5,batch_size=32 )
         #For lstm, batch_size=power of 2
         
         #Testing
@@ -447,9 +447,9 @@ def insertintotable():
                                forecast_set=forecast_set,error_lr=round(error_lr,2),error_lstm=round(error_lstm,2),error_arima=round(error_arima,2))
 
 if __name__ == '__main__':
-    # app.run()
-    from waitress import serve
-    serve(app, host='0.0.0.0', port=5000)
+    app.run()
+    # from waitress import serve
+    # serve(app, host='0.0.0.0', port=5000)
 
    
 
